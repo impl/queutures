@@ -3,7 +3,7 @@ package com.invectorate.open.queutures;
 import com.google.common.base.Function;
 
 /**
- * An object that performs an abitrary computation when it is given input of a certain type.
+ * An object that performs an arbitrary computation when it is given input of a certain type.
  * 
  * An {@code Informable} is conceptually similar to a {@link Runnable} or {@link Function}, except that it accepts a
  * single parameter from an external source and returns nothing.
@@ -16,7 +16,7 @@ import com.google.common.base.Function;
 public interface Informable<T> {
 
     /**
-     * Perform an abitrary computation based on given input.
+     * Perform an arbitrary computation based on given input.
      * 
      * @param object
      *            The informative object to use in the computation.

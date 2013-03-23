@@ -1,5 +1,7 @@
 # Queutures
 
+[![Build Status](https://travis-ci.org/invectorate/queutures.png?branch=master)](https://travis-ci.org/invectorate/queutures)
+
 Queutures are like futures, but better!
 
 With a typical Java [Future](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html), you're limited to just one result (accessible via the `Future.get()` methods). But with a Queuture, you have access to many, many more results.
