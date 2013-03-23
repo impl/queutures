@@ -1,6 +1,4 @@
-# Queutures
-
-[![Build Status](https://travis-ci.org/invectorate/queutures.png?branch=master)](https://travis-ci.org/invectorate/queutures)
+# Queutures [![Build Status](https://travis-ci.org/invectorate/queutures.png?branch=master)](https://travis-ci.org/invectorate/queutures)
 
 Queutures are like futures, but better!
 
@@ -52,6 +50,10 @@ while ((v = queuture.next()) != null) {
     System.out.println(v);
 }
 ```
+
+Consumption of a `Queuture` is thread safe, so many threads can read from a `Queuture` at the same time. The results will be distributed among the threads in a kind-of round-robin fashion (the semantics of `AbstractQueuedSynchronizer` are slightly broken by the way `QueutureTask` wakes up threads, so there's more possibility for barging than noted in the Java documentation).
+
+Additionally, both the `QueutureBox.put()` and `Queuture.next()` APIs have equivalent versions that allow a timeout to be specified.
 
 ## License
 
