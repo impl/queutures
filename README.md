@@ -2,7 +2,7 @@
 
 Queutures are like futures, but better!
 
-With a typical Java [Future](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html), you're limited to just one result (accessible via the `#get()` methods). But with a Queuture, you have access to many, many more results.
+With a typical Java [Future](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html), you're limited to just one result (accessible via the `Future.get()` methods). But with a Queuture, you have access to many, many more results.
 
 ## Use case
 
@@ -55,13 +55,17 @@ while ((v = queuture.next()) != null) {
 
 This library is licensed under the GNU GPL (version 2). It uses source code from OpenJDK that is licensed equivalently.
 
+## Documentation
+
+We have made available the [API documentation](http://invectorate.github.com/queutures/apidocs/) for easy consumption.
+
 ## FAQ
 
 <dl>
     <dt>I don't like the name "Queutures," and you should change it.</dt>
     <dd>Well I happen to like the name. Feel free to fork it.</dd>
     <dt>I don't like the license.</dt>
-    <dd>Me neither, but we're stuck with it unless someone feels like rewriting `QueutureTask` without using any existing code from the Java class library.</dd>
+    <dd>Me neither, but we're stuck with it unless someone feels like rewriting <tt>QueutureTask</tt> without using any existing code from the Java class library.</dd>
     <dt>Neither of those were questions, and this isn't either.</dt>
     <dd>For some reason "Frequently Stated Statements" just doesn't have the same ring to it.</dd>
 </dl>
