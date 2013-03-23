@@ -102,6 +102,7 @@ public class QueutureTaskTest {
 
         try {
             queuture.next();
+            Assert.fail("QueutureTask#next() must fail when the computation fails");
         } catch (ExecutionException ee) {
             Assert.assertTrue(RuntimeException.class.isInstance(ee.getCause()));
             Assert.assertTrue(TimeoutException.class.isInstance(ee.getCause().getCause()));
