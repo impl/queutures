@@ -18,11 +18,11 @@ import com.google.common.base.Stopwatch;
 
 /**
  * An implementation of {@link Queuture} that additionally provides the ability to run a computation.
- * 
+ * <p>
  * A {@link BlockingQueue} is used to pass data between the computation and the consumers of this class. Any type of
  * {@link BlockingQueue} is eligible to be used; interesting (but not unintentional) effects can be demonstrated by
  * using, e.g., a {@link SynchronousQueue}.
- * 
+ * <p>
  * In addition to serving as a standalone class, this provides {@code protected} functionality that may be useful when
  * creating customized task classes.
  * 
@@ -39,7 +39,7 @@ public class QueutureTask<V> implements RunnableQueuture<V> {
     /**
      * Create a new {@code QueutureTask} that will execute the given {@link Informable} as its computation, passing
      * results back to this class using the given {@link BlockingQueue}.
-     * 
+     * <p>
      * The queue passed to this object is required to be empty ({@link BlockingQueue#isEmpty()}). Additionally, it must
      * not be modified in any way outside of this class until {@link #isDone()} returns {@code true}.
      * 
@@ -82,7 +82,7 @@ public class QueutureTask<V> implements RunnableQueuture<V> {
 
     /**
      * Callback method invoked when this task transitions to a done state (whether normally or via cancellation).
-     * 
+     * <p>
      * The default implementation does nothing. Subclasses may override this method to invoke completion callbacks or
      * perform bookkeeping. Note that you can query status inside the implementation of this method to determine whether
      * this task has been cancelled.
@@ -92,7 +92,7 @@ public class QueutureTask<V> implements RunnableQueuture<V> {
     /**
      * Causes this class to report an {@link ExecutionException} with the given {@link Throwable} as its cause, unless
      * the computation has already completed or has been cancelled.
-     * 
+     * <p>
      * This method is invoked internally by the {@link #run()} method upon failure of the computation.
      * 
      * @param t
@@ -109,7 +109,7 @@ public class QueutureTask<V> implements RunnableQueuture<V> {
 
     /**
      * Synchronization control.
-     * 
+     * <p>
      * The underlying {@link AbstractQueuedSynchronizer}'s state is used to represent the running state of this object.
      * Underlying locks will be released in the following cases:
      * <ul>

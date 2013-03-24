@@ -2,7 +2,7 @@ package com.invectorate.open.queutures;
 
 /**
  * A {@link Queuture} that can itself be executed as a {@link Runnable}.
- * 
+ * <p>
  * Running this object will result in this object's computation being executed in the current thread.
  * 
  * @author Noah Fontes <nfontes@invectorate.com>

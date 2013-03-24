@@ -6,7 +6,7 @@ With a typical Java [Future](http://docs.oracle.com/javase/7/docs/api/java/util/
 
 ## Use case
 
-Imagine you have a task that you want to run asynchronously, such as crawling a Website. The task itself belongs in a single thread (because it's iterative), but it will produce many results during the course of its execution, and those results will be produced at abitrary times, potentially with large delays between them.
+Imagine you have a task that you want to run asynchronously, such as crawling a Website. The task itself belongs in a single thread (because it's iterative), but it will produce many results during the course of its execution, and those results will be produced at arbitrary times, potentially with large delays between them.
 
 With a typical `Future`, you'd have to wait until all of your crawling was complete before producing a large data set as the result of your computation. On the other hand, you could use a `BlockingQueue` to pass information on in pieces, but that requires a lot of overhead and can get messy if there are tons of queues floating around.
 

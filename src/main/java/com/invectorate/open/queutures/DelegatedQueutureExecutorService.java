@@ -34,7 +34,7 @@ public class DelegatedQueutureExecutorService extends ForwardingExecutorService 
     /**
      * Create a new queuture that can be executed later using a default queue implementation, an unbounded
      * {@link LinkedBlockingQueue}.
-     * 
+     * <p>
      * This method might be overridden in subclasses to change the queue implementation or to use an alternate strategy
      * for managing concurrent access to the results of the queuture.
      * 

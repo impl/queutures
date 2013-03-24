@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 
 /**
  * An object that performs an arbitrary computation when it is given input of a certain type.
- * 
+ * <p>
  * An {@code Informable} is conceptually similar to a {@link Runnable} or {@link Function}, except that it accepts a
  * single parameter from an external source and returns nothing.
  * 
