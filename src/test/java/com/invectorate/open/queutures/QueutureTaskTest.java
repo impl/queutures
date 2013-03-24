@@ -1,7 +1,9 @@
 package com.invectorate.open.queutures;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -298,6 +300,61 @@ public class QueutureTaskTest {
         TestFramework.runOnce(new ThreadCanBeCancelledWhileRunningInteraction());
     }
 
+    /**
+     * Container for multithreaded interaction with
+     * {@link QueutureTaskTest#runningButCancelledThreadDoesNotPassResults()}.
+     */
+    protected class RunningButCancelledThreadDoesNotPassResultsInteraction extends MultithreadedTestCase {
+
+        private BlockingQueue<String> queue = null;
+        private QueutureTask<String> queuture = null;
+
+        @Override
+        public void initialize() {
+            this.queue = new LinkedBlockingQueue<>();
+            this.queuture = QueutureTaskTest.newQueutureTaskWithWaitingInformable(this, this.queue);
+        }
+
+        @Override
+        public void finish() {
+            this.queue = null;
+            this.queuture = null;
+        }
+
+        public void thread1() {
+            this.queuture.run();
+        }
+
+        public void thread2() throws InterruptedException, ExecutionException {
+            Assert.assertFalse(this.queuture.isCancelled());
+            Assert.assertFalse(this.queuture.isDone());
+
+            Assert.assertEquals("Hello!", this.queuture.next());
+
+            this.queuture.cancel(false);
+
+            Assert.assertTrue(this.queuture.isCancelled());
+            Assert.assertTrue(this.queuture.isDone());
+
+            try {
+                this.queuture.next();
+                Assert.fail("QueutureTask#next() must fail when the computation is cancelled");
+            } catch (CancellationException ce) {}
+
+            Assert.assertTrue(this.queue.isEmpty());
+
+            this.waitForTick(1000);
+
+            Assert.assertTrue(this.queue.isEmpty());
+        }
+
+    }
+
+    @Test
+    public void runningButCancelledThreadDoesNotPassResults() throws Throwable {
+        TestFramework.runOnce(new RunningButCancelledThreadDoesNotPassResultsInteraction());
+    }
+
     protected static QueutureTask<String> newQueutureTaskWithBasicInformable() {
         Informable<QueutureBox<String>> informable = new Informable<QueutureBox<String>>() {
 
@@ -312,7 +369,7 @@ public class QueutureTaskTest {
             }
 
         };
-        return QueutureTaskTest.newQueutureTask(informable);
+        return QueutureTaskTest.newQueutureTask(informable, null);
     }
 
     protected static QueutureTask<String> newQueutureTaskWithThrowingInformable() {
@@ -324,10 +381,14 @@ public class QueutureTaskTest {
             }
 
         };
-        return QueutureTaskTest.newQueutureTask(informable);
+        return QueutureTaskTest.newQueutureTask(informable, null);
     }
 
     protected static QueutureTask<String> newQueutureTaskWithWaitingInformable(final MultithreadedTestCase mtc) {
+        return QueutureTaskTest.newQueutureTaskWithWaitingInformable(mtc, null);
+    }
+
+    protected static QueutureTask<String> newQueutureTaskWithWaitingInformable(final MultithreadedTestCase mtc, final BlockingQueue<String> queue) {
         Informable<QueutureBox<String>> informable = new Informable<QueutureBox<String>>() {
 
             @Override
@@ -343,7 +404,7 @@ public class QueutureTaskTest {
                 }
             }
         };
-        return QueutureTaskTest.newQueutureTask(informable);
+        return QueutureTaskTest.newQueutureTask(informable, queue);
     }
 
     protected static QueutureTask<String> newQueutureTaskWithComputationTimeoutInformable() {
@@ -353,21 +414,21 @@ public class QueutureTaskTest {
             public void inform(final QueutureBox<String> box) {
                 try {
                     box.put("Hello!");
-                    box.put("Goodbye!", 100, TimeUnit.MILLISECONDS);
+                    box.put("Goodbye!", 25, TimeUnit.MILLISECONDS);
                 } catch (TimeoutException | InterruptedException e) {
                     Throwables.propagate(e);
                 }
             }
         };
-        return QueutureTaskTest.newQueutureTaskWithTinyQueue(informable);
+        return QueutureTaskTest.newQueutureTaskWithTinyQueue(informable, null);
     }
 
-    protected static <V> QueutureTask<V> newQueutureTask(final Informable<QueutureBox<V>> informable) {
-        return new QueutureTask<V>(informable, Queues.<V> newLinkedBlockingQueue());
+    protected static <V> QueutureTask<V> newQueutureTask(final Informable<QueutureBox<V>> informable, final BlockingQueue<V> queue) {
+        return new QueutureTask<V>(informable, queue != null ? queue : Queues.<V> newLinkedBlockingQueue());
     }
 
-    protected static <V> QueutureTask<V> newQueutureTaskWithTinyQueue(final Informable<QueutureBox<V>> informable) {
-        return new QueutureTask<V>(informable, Queues.<V> newLinkedBlockingDeque(1));
+    protected static <V> QueutureTask<V> newQueutureTaskWithTinyQueue(final Informable<QueutureBox<V>> informable, final BlockingQueue<V> queue) {
+        return new QueutureTask<V>(informable, queue != null ? queue : Queues.<V> newLinkedBlockingQueue(1));
     }
 
 }

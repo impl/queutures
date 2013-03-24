@@ -245,6 +245,7 @@ public class QueutureTask<V> implements RunnableQueuture<V> {
                 if (this.compareAndSetState(s, Sync.RAN)) {
                     this.exception = t;
                     this.releaseShared(0);
+                    this.queue.clear();
                     QueutureTask.this.done();
                     return;
                 }
@@ -265,6 +266,7 @@ public class QueutureTask<V> implements RunnableQueuture<V> {
                     r.interrupt();
             }
             this.releaseShared(0);
+            this.queue.clear();
             QueutureTask.this.done();
             return true;
         }
@@ -311,17 +313,22 @@ public class QueutureTask<V> implements RunnableQueuture<V> {
             public void put(final V object) throws InterruptedException {
                 Preconditions.checkNotNull(object, "object must be specified");
 
-                Sync.this.queue.put(object);
-                Sync.this.releaseShared(1);
+                /* Don't add to the queue if we're in a cancellation state. */
+                if (Sync.this.getState() == Sync.RUNNING) {
+                    Sync.this.queue.put(object);
+                    Sync.this.releaseShared(1);
+                }
             }
 
             @Override
             public void put(final V object, final long timeout, final TimeUnit unit) throws TimeoutException, InterruptedException {
                 Preconditions.checkNotNull(object, "object must be specified");
 
-                if (!Sync.this.queue.offer(object, timeout, unit))
-                    throw new TimeoutException();
-                Sync.this.releaseShared(1);
+                if (Sync.this.getState() == Sync.RUNNING) {
+                    if (!Sync.this.queue.offer(object, timeout, unit))
+                        throw new TimeoutException();
+                    Sync.this.releaseShared(1);
+                }
             }
 
         }
